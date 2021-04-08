@@ -6,23 +6,54 @@ import {Messages} from 'primereact/messages';
 import { Growl } from 'primereact/growl';
 import { ClienteService } from '../../service/ClienteService';
 
+
 export class ClienteConsulta extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            anuncios: []
-        }        
+            form: {
+                email: ""
+            },
+            listaClientes: [
+                {
+                    name: "Leanne Graham",
+                    username: "Bret",
+                    email: "Sincere@april.biz",
+                    id:"1",
+                    address: {
+                        stree: "Kulas Light",
+                        suite: "Apt. 556",
+                        city: "Gwenborough",
+                        zipcode: "92998-3874",
+                        geo: {
+                            lat: "-37.3159",
+                            lng: "81.1496"
+                        }
+                    },
+                    phone: "1-770-736-8031 x56442",
+                    website: "hildegard.org",
+                    company: {
+                        name: "Romaguera-Crona",
+                        catchPhrase: "Multi-layered client-server neural-net",
+                        bs: "harness real-time e-markets"
+                    }
+                }
+            ]
+        };   
         this.showError = this.showError.bind(this);
         
         /* Específico da página */
         this.service = new ClienteService();
+
+        this.editItem = this.editItem.bind(this);
+
         this.deleteItem = this.deleteItem.bind(this);
+        this.actionDataTable = this.actionDataTable.bind(this);
         this.messages = new Messages();
 
     }
     componentDidMount() {
-        this.service.getAll(this);
-        console.log(this.state);
+        this.service.getAllByForm(this);
     }
 
     showError(summary,detail) {
@@ -36,6 +67,15 @@ export class ClienteConsulta extends Component {
         this.setState({[name]: value});
     }
     /*****FIM Métodos Obrigatórios */
+
+    deleteItem(rowData) {
+        this.service.delete(this, parseInt(rowData.id));
+    }
+
+    editItem(rowData) {
+        window.location.replace('http://localhost:3000/#/clientecadastro/?id=' + rowData.id);
+    }
+
 
     actionDataTable(rowData, column) {
         return (<div>
@@ -55,18 +95,23 @@ export class ClienteConsulta extends Component {
         </div>);
     }
 
-    deleteItem(rowData) {
-        this.anuncioService.delete(this, rowData.id);
-        
-    }
-
-    editItem(rowData){
-        window.location.replace('http://localhost:3000/#/clientecadastro/?id='+rowData.id);
-    }
-
+ 
     render() {
         return (
-            ""
+
+            
+
+            <DataTable
+                value={this.state.listaClientes}
+                editMode="row"
+                dataKey="id"
+                onRowEditInit={this.onRowEditInit}
+                onRowEditCancel={this.onRowEditCancel}>
+                <Column field="name" header="name" ></Column>
+                <Column field="username" header="username" ></Column>
+                <Column field="phone" header="phone" ></Column>
+                <Column header="Options" body={this.actionDataTable}></Column>
+            </DataTable>
         );
     }
 }

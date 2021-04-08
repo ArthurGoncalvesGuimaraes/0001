@@ -28,6 +28,9 @@ namespace Web.API.Models.Db
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Cliente>().ToTable("Cliente");
+            modelBuilder.Entity<Address>().ToTable("Address");
+            modelBuilder.Entity<Company>().ToTable("Company");
+            modelBuilder.Entity<Geolocation>().ToTable("Geolocation");
 
         }
     }
